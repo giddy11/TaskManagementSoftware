@@ -8,3 +8,10 @@
 /TaskManagement.Domain/obj
 /TaskManagement.Infrastructure/obj
 /TaskManagement.Persistence/obj
+/TaskManagement/bin/Debug/net8.0
+/.vs/ProjectEvaluation
+/TaskManagement/obj/Debug/net8.0/rpswa.dswa.cache.json
+/TaskManagement.Domain/bin/Debug/net8.0
+/TaskManagement.Infrastructure/bin/Debug/net8.0
+/TaskManagement.Persistence/bin/Debug/net8.0
+*.json
