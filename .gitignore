@@ -432,3 +432,4 @@ FodyWeavers.xsd
 /TaskManagement/bin/Debug/net8.0/TaskManagement.API.dll
 /TaskManagement/bin/Debug/net8.0/TaskManagement.API.exe
 /TaskManagement/bin/Debug/net8.0/TaskManagement.API.runtimeconfig.json
+/TaskManagement/obj/Debug/net8.0/rjsmcshtml.dswa.cache.json
