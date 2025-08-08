@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<TaskManagementDbContext>(options => options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=task_managementDB3;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
+builder.Services.AddDbContext<TaskManagementDbContext>(options => options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Task_ManagementDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
 
 
 
