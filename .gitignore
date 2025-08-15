@@ -33,3 +33,5 @@
 /TaskManagement/obj/project.nuget.cache
 /TaskManagement/obj/TaskManagement.API.csproj.nuget.g.props
 /TaskManagement/obj/TaskManagement.API.csproj.nuget.g.targets
+/.vs/TaskManag/v17
+/TaskManagement/obj/Debug/net8.0/TaskManagement.API.GeneratedMSBuildEditorConfig.editorconfig

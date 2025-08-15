@@ -11,7 +11,7 @@ namespace TaskManagement.Domain.UserManagement
         [EmailAddress(ErrorMessage = "Invalid email format.")]
         public string Email { get; set; } = default!;
         public string? PasswordHash { get; set; }
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; } = default!;
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
         public AccountType AccountType { get; set; }
