@@ -13,6 +13,6 @@ namespace TaskManagement.Domain.Projects
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public ProjectStatus ProjectStatus { get; set; } = ProjectStatus.Not_Started;
-        //public List<TodoTask> TodoTasks { get; set; } = default!;
+        public List<TodoTask>? TodoTasks { get; set; }
     }
 }
