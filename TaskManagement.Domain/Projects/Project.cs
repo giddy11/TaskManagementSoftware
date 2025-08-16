@@ -1,6 +1,6 @@
 ﻿using TaskManagement.Domain.UserManagement;
 
-namespace TaskManagement.Domain
+namespace TaskManagement.Domain.Projects
 {
     public class Project
     {
@@ -9,8 +9,8 @@ namespace TaskManagement.Domain
         public string? Description { get; set; }
         public int CreatedById { get; set; }
         public User CreatedBy { get; set; } = default!;
-        public string? Version { get; set; }
-        public string? Version { get; set; }
-        public string? Version { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public ProjectStatus ProjectStatus { get; set; } = ProjectStatus.Not_Started;
     }
 }
