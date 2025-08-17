@@ -20,10 +20,14 @@ namespace TaskManagement.API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateUser(User user)
         {
-            // Todo: Make email unique
             if (!ModelState.IsValid) 
             { 
                 return BadRequest(ModelState);
+            }
+            var userExists = await _context.Users.AnyAsync(u => u.Email == user.Email);
+            if (userExists)
+            {
+                return BadRequest("This Email already exists in the system.");
             }
             await _context.Users.AddAsync(user); // Users is the table name in the dbset
             await _context.SaveChangesAsync();
