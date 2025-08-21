@@ -149,6 +149,27 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     }
   },
@@ -156,19 +177,17 @@
     "schemas": {
       "AccountType": {
         "enum": [
-          0,
-          1
+          "User",
+          "Admin"
         ],
-        "type": "integer",
-        "format": "int32"
+        "type": "string"
       },
       "Gender": {
         "enum": [
-          0,
-          1
+          "Male",
+          "Female"
         ],
-        "type": "integer",
-        "format": "int32"
+        "type": "string"
       },
       "User": {
         "required": [
@@ -215,12 +234,11 @@
       },
       "UserStatus": {
         "enum": [
-          0,
-          1,
-          2
+          "Active",
+          "Inactive",
+          "Suspended"
         ],
-        "type": "integer",
-        "format": "int32"
+        "type": "string"
       }
     }
   }

@@ -104,6 +104,21 @@ namespace TaskManagement.API.Controllers
 
 
         // Delete Operation
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound(new {message = $"User with id {id} doesn't exist"});
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
     }
 }
