@@ -59,6 +59,48 @@ namespace TaskManagement.API.Controllers
 
 
         // Update Operation
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(int id, User user)
+        {
+            try
+            {
+                // check if the user id exist
+                var userExist = await _context.Users.FindAsync(id);
+
+                if (userExist == null)
+                {
+                    return NotFound();
+                }
+
+                //_context.Entry(user).State = EntityState.Modified;
+
+
+
+                userExist.Email = user.Email;
+                userExist.FirstName= user.FirstName;
+                userExist.LastName = user.LastName;
+                userExist.Gender = user.Gender;
+                userExist.AccountType = user.AccountType;
+
+
+                // step one: locate the line that will give a potential exception
+                // step 2: wrap that line in  a try
+                // step 3: catch that exception and return a meaninful response message
+
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest();
+            } catch (InvalidOperationException)
+            {
+                return BadRequest();
+            }
+
+            
+
+            return NoContent();
+
+        }
 
 
         // Delete Operation
