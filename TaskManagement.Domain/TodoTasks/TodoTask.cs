@@ -10,10 +10,6 @@ namespace TaskManagement.Domain.TodoTasks
         public string Description { get; set; }
         public User CreatedBy { get; set; } = default!;
         public int CreatedById { get; set; }
-
-        //public int ProjectId { get; set; }
-        //public Project Project { get; set; } = default!;
-
         public int AssignedToById { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
