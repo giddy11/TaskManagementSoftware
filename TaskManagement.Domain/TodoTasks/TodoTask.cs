@@ -11,8 +11,8 @@ namespace TaskManagement.Domain.TodoTasks
         public User CreatedBy { get; set; } = default!;
         public int CreatedById { get; set; }
 
-        public int ProjectId { get; set; }
-        public Project Project { get; set; } = default!;
+        //public int ProjectId { get; set; }
+        //public Project Project { get; set; } = default!;
 
         public int AssignedToById { get; set; }
         public DateTime StartDate { get; set; }

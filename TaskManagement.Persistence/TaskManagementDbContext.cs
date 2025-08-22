@@ -16,25 +16,25 @@ namespace TaskManagement.Persistence
             base.OnModelCreating(modelBuilder);
 
             // Project → TodoTasks
-            modelBuilder.Entity<TodoTask>()
-                .HasOne(t => t.Project)
-                .WithMany(p => p.TodoTasks)
-                .HasForeignKey(t => t.ProjectId)
-                .OnDelete(DeleteBehavior.NoAction); // <---- Breaks cascade loop
+            //modelBuilder.Entity<TodoTask>()
+            //    .HasOne(t => t.Project)
+            //    .WithMany(p => p.TodoTasks)
+            //    .HasForeignKey(t => t.ProjectId)
+            //    .OnDelete(DeleteBehavior.NoAction); // <---- Breaks cascade loop
 
-            // Project → CreatedBy (User)
-            modelBuilder.Entity<Project>()
-                .HasOne(p => p.CreatedBy)
-                .WithMany()
-                .HasForeignKey(p => p.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+            //// Project → CreatedBy (User)
+            //modelBuilder.Entity<Project>()
+            //    .HasOne(p => p.CreatedBy)
+            //    .WithMany()
+            //    .HasForeignKey(p => p.CreatedById)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
-            // TodoTask → CreatedBy (User)
-            modelBuilder.Entity<TodoTask>()
-                .HasOne(t => t.CreatedBy)
-                .WithMany()
-                .HasForeignKey(t => t.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+            //// TodoTask → CreatedBy (User)
+            //modelBuilder.Entity<TodoTask>()
+            //    .HasOne(t => t.CreatedBy)
+            //    .WithMany()
+            //    .HasForeignKey(t => t.CreatedById)
+            //    .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<User> Users { get; set; }
