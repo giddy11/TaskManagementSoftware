@@ -22,7 +22,7 @@ namespace TaskManagement.API.Controllers
         // maryann/todo/project
         // TODO: prevent duplicate title
         // TODO: createdById belongs to a user
-        // TODO: Validation for startdate and end date shopuldnt be the same
+        // TODO: Validation for startdate and end date shopuldnt be the same.
         [HttpPost]
         public async Task<ActionResult> CreateProject(Project project)
         {
