@@ -53,6 +53,8 @@ namespace TaskManagement.API.Controllers
         public async Task<ActionResult<List<Project>>> GetAllProjects()
         {
             return await _context.Projects
+                //.Include(p => p.CreatedBy)
+                .Include(to => to.TodoTasks)
                 .ToListAsync();
         }
 
