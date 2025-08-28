@@ -1,8 +1,14 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "TaskManagement.API",
-    "version": "1.0"
+    "title": "Task Management Application API",
+    "description": "Documentation on Task Management Application API",
+    "contact": {
+      "name": "Edoghotu Gideon Azibaobuom",
+      "url": "https://yourwebsite.com",
+      "email": "gideon.edoghotu@cyphercrescent.com"
+    },
+    "version": "v1"
   },
   "paths": {
     "/api/Auth/register": {
@@ -56,6 +62,37 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/change-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
               }
             }
           }
@@ -351,6 +388,29 @@
         ],
         "type": "string"
       },
+      "ChangePasswordDto": {
+        "required": [
+          "confirmNewPassword",
+          "currentPassword",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "newPassword": {
+            "minLength": 6,
+            "type": "string"
+          },
+          "confirmNewPassword": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "Gender": {
         "enum": [
           "Male",
@@ -576,6 +636,18 @@
         ],
         "type": "string"
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "JWT Authorization header using the Bearer scheme. Enter your token in the text input below.",
+        "scheme": "Bearer"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
 }

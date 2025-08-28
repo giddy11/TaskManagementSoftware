@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BCrypt.Net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TaskManagement.Domain.UserManagement;
 using TaskManagement.Persistence;
-using BCrypt.Net;
-using System.ComponentModel.DataAnnotations;
 
 namespace TaskManagement.API.Controllers
 {
@@ -92,6 +93,61 @@ namespace TaskManagement.API.Controllers
             });
         }
 
+        // POST: api/auth/change-password
+        [HttpPost("change-password")]
+        [Authorize] // Requires authentication
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+        {
+            // Validate the DTO
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Get the current user's ID from the JWT token
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized("Invalid token");
+            }
+
+            // Find the user
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            // Verify current password
+            if (!VerifyPassword(changePasswordDto.CurrentPassword, user.PasswordHash))
+            {
+                return BadRequest("Current password is incorrect");
+            }
+
+            // Check if new password is the same as current password
+            if (BCrypt.Net.BCrypt.Verify(changePasswordDto.NewPassword, user.PasswordHash))
+            {
+                return BadRequest("New password cannot be the same as current password");
+            }
+
+            // Update the password
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(changePasswordDto.NewPassword);
+            //user.UpdatedAt = DateTime.UtcNow; // Add this property to your User model if it doesn't exist
+
+            try
+            {
+                _dbContext.Users.Update(user);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok(new { Message = "Password changed successfully" });
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the exception
+                return StatusCode(500, "An error occurred while changing the password");
+            }
+        }
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]
@@ -168,5 +224,19 @@ namespace TaskManagement.API.Controllers
 
         [Required(ErrorMessage = "Gender is required")]
         public Gender Gender { get; set; }
+    }
+
+    public class ChangePasswordDto
+    {
+        [Required(ErrorMessage = "Current password is required")]
+        public string CurrentPassword { get; set; }
+
+        [Required(ErrorMessage = "New password is required")]
+        [MinLength(6, ErrorMessage = "New password must be at least 6 characters long")]
+        public string NewPassword { get; set; }
+
+        [Required(ErrorMessage = "Confirm new password is required")]
+        [Compare("NewPassword", ErrorMessage = "New password and confirmation password do not match")]
+        public string ConfirmNewPassword { get; set; }
     }
 }
