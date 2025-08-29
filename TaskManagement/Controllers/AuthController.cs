@@ -99,7 +99,8 @@ namespace TaskManagement.API.Controllers
             {
                 Token = token,
                 Email = user.Email,
-                Id = user.Id
+                Id = user.Id,
+                AccountType = user.AccountType
             });
         }
 

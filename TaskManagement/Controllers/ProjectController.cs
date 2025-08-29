@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManagement.Domain.Projects;
@@ -24,6 +25,7 @@ namespace TaskManagement.API.Controllers
         // TODO: createdById belongs to a user
         // TODO: Validation for startdate and end date shopuldnt be the same
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> CreateProject(Project project)
         {
             await _context.Projects.AddAsync(project);
@@ -50,6 +52,7 @@ namespace TaskManagement.API.Controllers
 
         // Fetch All Operation
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<Project>>> GetAllProjects()
         {
             return await _context.Projects

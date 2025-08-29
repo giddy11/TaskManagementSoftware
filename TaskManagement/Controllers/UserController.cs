@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 //using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace TaskManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly TaskManagementDbContext _context;
@@ -22,6 +24,7 @@ namespace TaskManagement.API.Controllers
         // maryann/todo/user
         // TODO: prevent duplicate emails
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> CreateUser(User user)
         {
             if (!ModelState.IsValid)
@@ -106,6 +109,7 @@ namespace TaskManagement.API.Controllers
 
         // Delete Operation
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
