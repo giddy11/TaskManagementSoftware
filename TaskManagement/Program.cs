@@ -1,3 +1,4 @@
+// Import necessary namespaces for the application
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -7,34 +8,42 @@ using System.Text.Json.Serialization;
 using TaskManagement.Domain.UserManagement;
 using TaskManagement.Persistence;
 
+// Create a new web application builder with preconfigured defaults
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container - these are components that will be used by our application
 
-// Add services to the container.
-
+// Add controller services to handle HTTP requests
 builder.Services.AddControllers()
+    // Configure JSON options to convert enums to strings in API responses
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddDbContext<TaskManagementDbContext>(options => options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=task_managementDB3;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
+// Register the database context with Entity Framework Core
+// This tells our app to use SQL Server with the provided connection string
+builder.Services.AddDbContext<TaskManagementDbContext>(options =>
+    options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=task_managementDB3;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
 
+// Add API explorer services to help generate OpenAPI/Swagger documents
 builder.Services.AddEndpointsApiExplorer();
 
-//1. Add the security definition for the swagger
+// Configure Swagger generation for API documentation
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    // Define the security scheme for JWT Bearer tokens in Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Name = "Authorization",  // The name of the header
+        Type = SecuritySchemeType.Http,  // The type of security scheme
+        Scheme = "Bearer",  // The scheme name
+        In = ParameterLocation.Header,  // Where the token is placed (header)
         Description = "JWT Authorization header that uses a bearer scheme. Enter token in the text below"
     });
 
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    // Add a global security requirement that applies to all API endpoints
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -42,54 +51,66 @@ builder.Services.AddSwaggerGen(options =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    Id = "Bearer"  // Reference the security scheme defined above
                 }
             },
-            Array.Empty<string>()
+            Array.Empty<string>()  // No specific scopes required
         }
     });
 });
 
-// Add the authentication service
+// Configure authentication services to use JWT Bearer tokens
 builder.Services.AddAuthentication(options =>
 {
+    // Set the default authentication scheme to JWT Bearer
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+}).AddJwtBearer(options =>  // Add JWT Bearer token handling
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    // Configure how to validate incoming JWT tokens
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Issuer"],
-        ValidAudience = builder.Configuration["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["key"])),
-        ClockSkew = TimeSpan.Zero
+        ValidateIssuer = true,  // Validate the token issuer
+        ValidateAudience = true,  // Validate the token audience
+        ValidateLifetime = true,  // Check if the token is not expired
+        ValidateIssuerSigningKey = true,  // Validate the signing key
+        ValidIssuer = builder.Configuration["Issuer"],  // Get valid issuer from configuration
+        ValidAudience = builder.Configuration["Audience"],  // Get valid audience from configuration
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["key"])),  // Get signing key from configuration
+        ClockSkew = TimeSpan.Zero  // No tolerance for expiration time differences
     };
 });
 
-
-//3. Add the authorization
+// Configure authorization policies based on user roles
 builder.Services.AddAuthorizationBuilder()
+    // Create an "Admin" policy that requires the user to have the Admin role
     .AddPolicy("Admin", policy => policy.RequireRole(AccountType.Admin.ToString()))
+    // Create a "User" policy that requires the user to have the User role
     .AddPolicy("User", policy => policy.RequireRole(AccountType.User.ToString()));
 
-
+// Build the application using all the configured services
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline - this determines how requests are handled
+
+// If we're in development environment, enable Swagger for API documentation
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger();  // Generate the OpenAPI specification
+    app.UseSwaggerUI();  // Serve the Swagger UI tool
 }
 
+// Redirect HTTP requests to HTTPS for security
 app.UseHttpsRedirection();
 
+// Enable authentication - this must come before authorization
+app.UseAuthentication();
+
+// Enable authorization - determines what authenticated users can access
 app.UseAuthorization();
 
+// Map controller routes to handle incoming requests
 app.MapControllers();
 
+// Run the application - this starts the server and begins listening for requests
 app.Run();
