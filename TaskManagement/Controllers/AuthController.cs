@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -104,6 +105,26 @@ namespace TaskManagement.API.Controllers
             });
         }
 
+        [HttpGet("me")]
+        [Authorize]
+        public ActionResult<CurrentUserDto> GetCurrentUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var email = identity.FindFirst(ClaimTypes.Email).Value;
+            var accountType = identity.FindFirst(ClaimTypes.Role).Value;
+
+            var currentUser = new CurrentUserDto
+            {
+                Id = userId,
+                Email = email,
+                AccountType = accountType
+            };
+
+            return Ok(currentUser);
+        }
+
         private string GenerateJwtToken(User user)
         {
             //Claim
@@ -141,7 +162,7 @@ namespace TaskManagement.API.Controllers
             return newToken;
         }
 
-        
+
 
         private bool VerifyPassword(string password, string storedHash)
         {

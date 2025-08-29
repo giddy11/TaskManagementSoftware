@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TaskManagement.Domain.Projects;
 using TaskManagement.Domain.UserManagement;
 using TaskManagement.Persistence;
@@ -28,6 +29,10 @@ namespace TaskManagement.API.Controllers
         [Authorize]
         public async Task<ActionResult> CreateProject(Project project)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            project.CreatedById = int.Parse(userId);
             await _context.Projects.AddAsync(project);
             await _context.SaveChangesAsync();
 
